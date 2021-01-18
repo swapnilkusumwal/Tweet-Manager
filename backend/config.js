@@ -1,9 +1,0 @@
-module.exports={
-	"key":"mwyxIYtAirsyJrvHzHLk4hctF",
-	"secret":"fKNc3crqlcN1N1Y5CyLXuQzOqo1ilUiQVRxz4I6mlMUYaTCwpt",
-	"token":"AAAAAAAAAAAAAAAAAAAAADIzGwEAAAAAN1GbgZrSn3UyjAq%2FbUrhrkW%2B264%3DnllMLktp1iYxteIZawGgz992h6hXSC5i3cPJ2M9ETWA54iRb8Q",
-	"accessToken":"1294003830556950534-f2A2abeP2ZNmGLZRlB1YWEjRQevGxK",
-	"accessTokenSecret":"trHBKxuVMXrkPDE0OLjCP6OgAz16m8blG549l2h0UPpEF",
-	"mongokey":"mongodb+srv://skusumwal:Rajatsonu123+@cluster0-xarhw.mongodb.net/tweetmention?retryWrites=true&w=majority",
-	"sessionSecret":'thisisverysecret'
-};
