@@ -37,32 +37,32 @@ const useStyles=makeStyles({
 })
 
 export default function Login(){
-  const handleLogin=(email,password)=>{
-    setIsLoading(true);
-    fetch(baseUrl+'login',{
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      credentials:'same-origin'
-    })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        console.log(response);
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-    error => {
-          var errmess = new Error(error.message);
-          throw errmess;
-    })
-    .then(response => response.json())
-    .then(res=>{console.log(res);setIsLoading(false)})
-    .catch(error=>alert(error.message))
-  }
+  // const handleLogin=(email,password)=>{
+  //   setIsLoading(true);
+  //   fetch(baseUrl+'login',{
+  //     headers:{
+  //       'Content-Type': 'application/json',
+  //     },
+  //     credentials:'same-origin'
+  //   })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       return response;
+  //     } else {
+  //       console.log(response);
+  //       var error = new Error('Error ' + response.status + ': ' + response.statusText);
+  //       error.response = response;
+  //       throw error;
+  //     }
+  //   },
+  //   error => {
+  //         var errmess = new Error(error.message);
+  //         throw errmess;
+  //   })
+  //   .then(response => response.json())
+  //   .then(res=>{console.log(res);setIsLoading(false)})
+  //   .catch(error=>alert(error.message))
+  // }
   const handleRegister=(email,password)=>{
     fetch(baseUrl+'register',{
       method:'POST',
@@ -96,9 +96,9 @@ export default function Login(){
   // const [theme,setTheme]=useState(1);// 1 for dark 0 for light
   const [isLoading,setIsLoading]=useState(false);
   const classes=useStyles();
-  const [loginEmail,setLoginEmail]=useState('');
+  // const [loginEmail,setLoginEmail]=useState('');
   const [registerEmail,setRegisterEmail]=useState('');
-  const [loginPassword,setLoginPassword]=useState('');
+  // const [loginPassword,setLoginPassword]=useState('');
   const [registerPassword,setRegisterPassword]=useState('');
   if(!isLoading)
   return (

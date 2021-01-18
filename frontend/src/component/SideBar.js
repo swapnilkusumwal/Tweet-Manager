@@ -28,7 +28,7 @@ export default function SideBar(props) {
   return (
       <Grid className={classes.sidebar} item>
         <ListItem button key={11} style={{marginTop:'2vh',marginBottom:'5vh'}}>
-          <img src={icon} style={{width:'30px',paddingTop:'10px'}}/>
+          <img src={icon} alt="icon" style={{width:'30px',paddingTop:'10px'}}/>
         </ListItem>
         <List>
           {sideIcons.map((item, index) => (

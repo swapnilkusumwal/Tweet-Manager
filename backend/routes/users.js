@@ -17,6 +17,15 @@ function getUser(id){
   return Users.findOne({twitterId:id});
 }
 
+async function insertTweet(id,tweet){
+  let user=await getUser(id);
+  let index=await user.hashMap.get(tweet.in_reply_to_status_id_str);
+  await user.hashMap.set(tweet.id_str,index);
+  await user.tweets[index-1].push(tweet);
+  await user.markModified('tweets');
+  await user.save();
+}
+
 async function addTweet(id,tweet){
   let user=await getUser(id);
   if(user){
@@ -66,11 +75,17 @@ router.get('/',async function(req, res, next) {
   }));
 })
 
-router.post('/',(req,res)=>{
-  T.post('/statuses/update', {status:req.body.status,in_reply_to_status_id:req.body.replyto} , (error, tweet, response) => {//use str wala id
+router.post('/',async (req,res)=>{
+  let T=await createTwit(req.body.token,req.body.tokenSecret);
+  T.post('/statuses/update', {status:req.body.status,in_reply_to_status_id:req.body.replyto} , async(error, tweet, response) => {//use str wala id
     if(error) {
-      res.sendStatus(500);
+      res.statusCode=403;
+      res.statusMessage=allErrors[0].message;
       console.log(error);
+    }
+    else{
+      await insertTweet(req.body.id,tweet);
+      res.json({key:tweet});
     }
   })
 })

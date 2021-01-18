@@ -13,6 +13,8 @@ import CancelRoundedIcon from '@material-ui/icons/CancelRounded';
 import EmailIcon from '@material-ui/icons/Email';
 import CallIcon from '@material-ui/icons/Call';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import SendIcon from '@material-ui/icons/Send';
+
 let baseUrl="http://localhost:3000/"
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,8 +111,52 @@ function IndividualChat(props){
 }
 
 function LoggedIn(props) {
+
+  function handlePostTweet(){
+    console.log(allTweets[currentCard].id_str);
+    setIsLoading(true);
+    let tweet=allTweets[currentCard];
+    let data={
+      status:document.getElementById("current").value,
+      replyto:tweet[tweet.length-1].id_str,
+      token:token,
+      tokenSecret:tokenSecret,
+      id:id
+    };
+    console.log(data);
+    fetch(baseUrl+'login/user',{
+      method:'POST',
+      body:JSON.stringify(data),
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      credentials:'same-origin'
+    })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          var errmess = new Error(error.message);
+          throw errmess;
+    })
+    .then(response => response.json())
+    .then(res=>{
+      let tempAllTweets=allTweets;
+      tempAllTweets[currentCard].push(res.key);
+      setAllTweets(tempAllTweets);
+      setIsLoading(false);
+    })
+    .catch(error=>{alert(error.message);
+      setIsLoading(false);})
+  
+  }
   function SelectedCard(props){
-    console.log("HERE");
     const classes = useStyles();
     return(
       <Card className={classes.root} style={{border:'1px solid grey'}}>
@@ -119,7 +165,6 @@ function LoggedIn(props) {
           <h3 style={{marginLeft:'20px'}}>{props.tweet[0].user.name}</h3>
           <Chip
             label="Create a task"
-            clickable
             style={{marginLeft:'2vw',marginLeft:'25vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'1.5vh',position:'relative',right:'0'}}
           />
         </Grid>
@@ -131,8 +176,10 @@ function LoggedIn(props) {
           <Grid style={{display:'flex',flexDirection:'row',bottom:0,position:'fixed', marginBottom:'5vh'}}>
             <Avatar src={photoUrl}/>
             <TextField
+                id="current"
+                key="yoyo"
                 InputProps={{
-                  endAdornment: <InputAdornment position="end"><AttachmentIcon/></InputAdornment>,
+                  endAdornment: <InputAdornment position="end"><AttachmentIcon/></InputAdornment>
                 }}
                 style={{width:'40vw',marginLeft:'1vw'}}
                 size='small'
@@ -140,6 +187,7 @@ function LoggedIn(props) {
                 type="text"
                 placeholder="Reply..."
               />
+            <SendIcon style={{marginTop:'1vh',marginLeft:'1vw'}} onClick={()=>handlePostTweet()}/> 
           </Grid>
         </Grid>
       </Card>
@@ -198,9 +246,10 @@ function LoggedIn(props) {
     .then(res=>{
       setName(res.key.name);
       setPhotoUrl(res.key.photoUrl);
-      setUsername(res.key.username);
-      setId(res.key.id);
       setAllTweets(res.key.tweets);
+      setToken(query.get('token'));
+      setTokenSecret(query.get('tokenSecret'));
+      setId(query.get('id'))
       setIsLoading(false);
     })
     .catch(error=>alert(error.message))
@@ -208,14 +257,13 @@ function LoggedIn(props) {
 
   const [isLoading,setIsLoading]=useState(true);
   const [online,setOnline]=useState('Online');
-  const [id,setId]=useState('');
-  const [username,setUsername]=useState('');
+  const [token,setToken]=useState('');
+  const [tokenSecret,setTokenSecret]=useState('');
   const [name,setName]=useState('');
+  const [id,setId]=useState('');
   const [allTweets,setAllTweets]=useState([]);
   const [photoUrl,setPhotoUrl]=useState('background.jpg');
   const [currentCard,setCurrentCard]=useState(0);
-
-  const [currentTweet,setCurrentTweet]=useState('');
   if(!isLoading)
   return (
     <Grid container>
