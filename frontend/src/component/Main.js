@@ -9,7 +9,6 @@ function Main(props){
     <Switch location={props.location}>
       <Route path='/loginpage' component={Login} />
       <Route path='/loggedin' component={LoggedIn}/>
-      <Route path='/twitterdata' component={TwitterData}/>
       {/* <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postFeedback={this.props.postFeedback}/>} /> */}
       <Redirect to="/loginpage" />
     </Switch>

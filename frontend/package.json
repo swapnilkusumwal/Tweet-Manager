@@ -2,6 +2,7 @@
   "name": "tweetmention",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3000",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
@@ -15,6 +16,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "socket.io-client": "^3.1.0",
     "twit": "^2.2.11"
   },
   "scripts": {

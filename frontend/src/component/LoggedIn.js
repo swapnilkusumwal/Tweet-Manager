@@ -14,7 +14,8 @@ import EmailIcon from '@material-ui/icons/Email';
 import CallIcon from '@material-ui/icons/Call';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SendIcon from '@material-ui/icons/Send';
-
+import io from 'socket.io-client';
+var socket;
 let baseUrl="http://localhost:3000/"
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UserCard({name,photoUrl,username}){
+
   let classes=useStyles();
   return(
     <Grid style={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
@@ -104,16 +106,24 @@ function IndividualChat(props){
       </Grid>
       </Grid>
       <Grid item sm={2} style={{marginLeft:'1vw',marginTop:'1vh'}}>
-        <Typography>{tweet.created_at.substr(4,12)}</Typography>
+        <Typography>{(new Date(tweet.created_at)).toString().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}).toString().substr(16,5)+'\n'+
+        (new Date(tweet.created_at)).toString().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}).toString().substr(4,6)}</Typography>
       </Grid>
     </Grid>   
   )
 }
 
 function LoggedIn(props) {
-
+  const [isLoading,setIsLoading]=useState(true);
+  const [online,setOnline]=useState('Online');
+  const [token,setToken]=useState('');
+  const [tokenSecret,setTokenSecret]=useState('');
+  const [name,setName]=useState('');
+  const [id,setId]=useState('');
+  const [allTweets,setAllTweets]=useState('');
+  const [photoUrl,setPhotoUrl]=useState('background.jpg');
+  const [currentCard,setCurrentCard]=useState(0);
   function handlePostTweet(){
-    console.log(allTweets[currentCard].id_str);
     setIsLoading(true);
     let tweet=allTweets[currentCard];
     let data={
@@ -121,7 +131,8 @@ function LoggedIn(props) {
       replyto:tweet[tweet.length-1].id_str,
       token:token,
       tokenSecret:tokenSecret,
-      id:id
+      id:id,
+      index:parseInt(currentCard)+1
     };
     console.log(data);
     fetch(baseUrl+'login/user',{
@@ -147,16 +158,14 @@ function LoggedIn(props) {
     })
     .then(response => response.json())
     .then(res=>{
-      let tempAllTweets=allTweets;
-      tempAllTweets[currentCard].push(res.key);
-      setAllTweets(tempAllTweets);
+      // let tempAllTweets=res.key;
+      setAllTweets(res.key);
       setIsLoading(false);
     })
-    .catch(error=>{alert(error.message);
-      setIsLoading(false);})
-  
+    .catch(error=>{alert(error.message);})
   }
   function SelectedCard(props){
+
     const classes = useStyles();
     return(
       <Card className={classes.root} style={{border:'1px solid grey'}}>
@@ -165,15 +174,15 @@ function LoggedIn(props) {
           <h3 style={{marginLeft:'20px'}}>{props.tweet[0].user.name}</h3>
           <Chip
             label="Create a task"
-            style={{marginLeft:'2vw',marginLeft:'25vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'1.5vh',position:'relative',right:'0'}}
+            style={{marginLeft:'2vw',marginLeft:'30vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'1.5vh',justifyContent:'flex-end'}}
           />
         </Grid>
         <Divider/>
-        <Grid style={{paddingLeft:'20px',marginBottom:'10px',marginRight:'20px',height:'63vh',marginTop:'3vh',maxHeight: '63vh', overflow: 'auto'}}>
-          {props.tweet.map((tweet)=>{
-            return (<IndividualChat key={tweet.id_str} tweet={tweet}/>)
+        <Grid style={{paddingLeft:'20px',marginBottom:'10px',marginRight:'20px',height:'65vh',marginTop:'3vh',maxHeight: '63vh', overflow: 'auto'}}>
+          {props.tweet.map((tweet,index)=>{
+            return (<IndividualChat key={index} tweet={tweet}/>)
           })}
-          <Grid style={{display:'flex',flexDirection:'row',bottom:0,position:'fixed', marginBottom:'5vh'}}>
+          <Grid style={{display:'flex',flexDirection:'row',bottom:'10px',position:'fixed', marginBottom:'5vh'}}>
             <Avatar src={photoUrl}/>
             <TextField
                 id="current"
@@ -197,6 +206,7 @@ function LoggedIn(props) {
   function ConversationCard(props) {
 
     const classes = useStyles();
+    
     return (
       <Card onClick={()=>setCurrentCard(props.index)} className={classes.root} style={{border:'1px solid grey'}}>
         <CardHeader
@@ -216,10 +226,31 @@ function LoggedIn(props) {
   }
 
   useEffect(() => {
+    setIsLoading(true);
+    socket=io('/');
+    socket.on('update',async (data)=>{
+      console.log(data);
+      setAllTweets(data.key);
+    })
+    socket.on('tweet',async (data)=>{
+      console.log("data");
+      let {key,index}=data;
+      let tempAllTweets=allTweets;
+      if(index>=allTweets.length){
+        tempAllTweets.push([key]);
+      }
+      else{
+        tempAllTweets[index].push(key);
+      }
+      setAllTweets(tempAllTweets);
+    })//socket for streaming data
     const query = new URLSearchParams(props.location.search);
     setIsLoading(true);
     let userData={
-      id:query.get('id')
+      id:query.get('id'),
+      token:query.get('token'),
+      tokenSecret:query.get('tokenSecret'),
+      username:query.get('username'),
     };
     fetch(baseUrl+'userdetails/',{
       method:'POST',
@@ -233,6 +264,8 @@ function LoggedIn(props) {
       if (response.ok) {
         return response;
       } else {
+
+        console.log("IDHAR2");
         var error = new Error('Error ' + response.status + ': ' + response.statusText);
         error.response = response;
         throw error;
@@ -253,17 +286,11 @@ function LoggedIn(props) {
       setIsLoading(false);
     })
     .catch(error=>alert(error.message))
+    return ()=>{
+      setIsLoading(false);
+    }
   },[])
-
-  const [isLoading,setIsLoading]=useState(true);
-  const [online,setOnline]=useState('Online');
-  const [token,setToken]=useState('');
-  const [tokenSecret,setTokenSecret]=useState('');
-  const [name,setName]=useState('');
-  const [id,setId]=useState('');
-  const [allTweets,setAllTweets]=useState([]);
-  const [photoUrl,setPhotoUrl]=useState('background.jpg');
-  const [currentCard,setCurrentCard]=useState(0);
+  
   if(!isLoading)
   return (
     <Grid container>
@@ -321,15 +348,15 @@ function LoggedIn(props) {
         <Grid lg={12} item style={{display:'flex',flexDirection:'column'}}>
           <Grid lg={12} item style={{display:'flex',flexDirection:'row'}}>
             <Grid md={3} item style={{maxHeight: '74vh', overflow: 'auto'}}>
-              {allTweets.map((data,index)=>{
-                return <ConversationCard key={index} tweet={data} index={index}/>
-              })}
+              {allTweets!==''?allTweets.map((data,index)=>{
+                return data?<ConversationCard key={index} tweet={data} index={index}/>:<div></div>
+              }):<div></div>}
             </Grid>
             <Grid md={7} item style={{paddingRight:'10',paddingLeft:'20px'}}>
-              {<SelectedCard tweet={allTweets[currentCard]}/>}
+              {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
             </Grid>
-            <Grid md={2} item style={{height:'75.2vh',paddingTop:'10px',border:'1px solid grey'}}>
-              <UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>
+            <Grid md={2} item style={{height:'74vh',paddingTop:'10px',border:'1px solid grey'}}>
+              {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
             </Grid>
           </Grid>
         </Grid>

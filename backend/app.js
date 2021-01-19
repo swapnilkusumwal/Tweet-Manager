@@ -2,7 +2,6 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-// const cookieSession = require("cookie-session");
 var logger = require('morgan');
 var passport=require('passport');
 var session = require('express-session');
@@ -12,10 +11,33 @@ var loginRouter = require('./routes/loginRouter');
 var registerRouter = require('./routes/registerRouter');
 var config=require('./config');
 var usersRouter = require('./routes/users');
-var userdetails = require('./routes/userdetails');
+var userdetails = require('./routes/userdetails').router;
+var userSetServer = require('./routes/userdetails').setServer;
 var passportLogin = require("./passportLogin");
 var cors=require('cors');
 var app = express();
+var debug = require('debug')('backend:server');
+var http = require('http');
+const server = http.createServer(app);
+// var socketio=require('socket.io');
+// const io=socketio(server);
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = (process.env.PORT || '3000');
+app.set('port', port);
+
+// io.on('connection',(socket)=>{
+//   console.log("CONNECTED TO SOCKET");
+//   socket.emit('tweet',{key:"value"});
+// })
+
+server.listen(port,()=>{
+  console.log('Server running on port 3000...')
+  userSetServer(server)
+});
 
 mongoose.connect('mongodb://localhost:27017/tweetmention',{ useNewUrlParser: true,useUnifiedTopology: true }, () => {
   console.log("connected to mongo db");
@@ -26,9 +48,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: "http://localhost:3001", // allow to server to accept request from different origin
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true // allow session cookie from browser to pass through
+  origin: "http://localhost:3001",methods: "GET,PUT,POST,DELETE",credentials: true
 }));
 
 app.set('views', path.join(__dirname, 'views'));
@@ -65,5 +85,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-module.exports = app;
+module.exports={
+  server:server,
+  app:app
+};

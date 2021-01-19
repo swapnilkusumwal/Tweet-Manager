@@ -10,12 +10,7 @@ function findUserForLogin(email,password){
 
 router.get('/failed',(req,res)=>{
   res.redirect(url.format({
-    pathname:"http://localhost:3001/login",
-    query: {
-       "a": 1,
-       "b": 2,
-       "valid":"your string here"
-     }
+    pathname:"http://localhost:3001/login"
   }));
 })
 

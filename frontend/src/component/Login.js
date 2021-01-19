@@ -27,6 +27,8 @@ const useStyles=makeStyles({
     alignItems: 'center',
     height: '100vh',
     backgroundImage: `url('background.jpg')`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
     color:'#282c34'
   },
   light:{
@@ -119,7 +121,7 @@ export default function Login(){
       <Container style={{height:'65vh'}}>
         <Grid container spacing={4} justify='space-around'>
           <Grid xs={12} sm={6} md={4} lg={4} item>
-            <Paper className={classes.light} style={{marginTop:'2vh',display:'flex',height:'60vh',width:'100%',flexDirection:'column'}}>
+            <Paper className={classes.light} style={{marginTop:'2vh',display:'flex',height:'40vh',width:'100%',flexDirection:'column'}}>
               <Grid >
                 <h1 >Login</h1>
                 <hr/>
@@ -157,9 +159,10 @@ export default function Login(){
                 onClick={()=>handleLogin(loginEmail,loginPassword)}>
                 Login
               </Button> */}
-              <Grid style={{display:'flex',alignItems:'center',justifyContent:'center',marginTop:'20vh'}}>
+              <Grid style={{display:'flex',alignItems:'center',justifyContent:'center',marginTop:'7vh'}}>
                 <Button 
                   startIcon={<TwitterIcon/>}
+                  style={{paddingTop:'10px',paddingBottom:'10px'}}
                   variant='contained' color='primary'
                   href="http://localhost:3000/login">
                   Login with Twitter
@@ -168,8 +171,8 @@ export default function Login(){
             </Paper>
           </Grid>
           <Grid xs={12} sm={6} md={4} lg={4} item>
-            <Paper className={classes.light} style={{height:'60vh',width:'100%'}}>
-              <h1>Register</h1>
+            <Paper className={classes.light} style={{height:'40vh',width:'100%'}}>
+              <h1 style={{paddingTop:'2vh'}}>Register</h1>
               <hr/>
               <Grid item>
               <TextField 

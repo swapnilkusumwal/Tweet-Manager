@@ -74,8 +74,14 @@ async function arrangeTweets(allTweets){
     else{
       // console.log("here3");
       let index=firstMention.get(allTweets[i].id_str);
-      firstMention.set(allTweets[i].id_str,index);
-      arrangedTweets[index-1].push(allTweets[i]);
+      if(index!==undefined || index !==null || index===0){
+        firstMention.set(allTweets[i].id_str,index);
+        arrangedTweets[index-1].push(allTweets[i]);
+      }
+      else{
+        firstMention.set(allTweets[i].id_str,arrangeTweets.length);
+        arrangedTweets.push([allTweets[i]]);
+      }
     }
   }
   return {arrangedTweets,firstMention};
