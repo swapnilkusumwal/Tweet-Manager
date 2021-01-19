@@ -17,7 +17,7 @@ router.get('/failed',(req,res)=>{
 router.get('/',passport.authenticate('twitter'))
 
 router.post('/',async (req,res,next)=>{
-  // windows.location.href='login'
+
   let {email,password}=req.body;
 
   let user=await findUserForLogin(email,password);
@@ -33,7 +33,6 @@ router.post('/',async (req,res,next)=>{
     res.send({user:email});
   }
 
-  
 })
 
 module.exports = router;

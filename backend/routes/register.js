@@ -16,10 +16,8 @@ function createUser(email,password){
 }
 
 router.post('/',async (req,res,next)=>{
-  console.log("ASDAS");
   let {email,password}=req.body;
   let user=await findUser(email);
-  console.log(user);
   if(user){
     res.setHeader('Content-Type','application/json');
     res.statusCode=401;

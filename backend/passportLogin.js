@@ -104,17 +104,21 @@ function createUser(profile,arrangedTweets){
 }
 
 let passportStrategy=new Strategy({
+  
   consumerKey: config.key,
   consumerSecret: config.secret,
   callbackURL: 'http://localhost:3000/login/redirect'
+
   },async function(token, tokenSecret, profile, callback) {
-    // console.log(profile);
+
     let currentUser=await getUser(profile.id);
-    // console.log(currentUser);
+
     if(!currentUser){
+
       let allTweets=await getAllTweets(token,tokenSecret);
       let arrangedTweets=await arrangeTweets(allTweets);
       await createUser(profile,arrangedTweets);
+      
     }
     return callback(null, {token, tokenSecret, profile});
 })

@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
-  center:{
+  horitonzalCenter:{
     display:'flex',
     paddingTop:'1vh',
     justifyContent:'center'
@@ -39,20 +39,20 @@ function UserCard({name,photoUrl,username}){
 
   let classes=useStyles();
   return(
-    <Grid style={{display:'flex',flexDirection:'column',justifyContent:'center'}}>
-      <Grid style={{display:'flex',justifyContent:'flex-end',paddingRight:'10px'}}>
+    <Grid style={styles.center}>
+      <Grid style={styles.userCardHeader}>
         <CancelRoundedIcon/>
       </Grid>
-      <Grid className={classes.center}>
+      <Grid className={classes.horitonzalCenter}>
         <Avatar src={photoUrl} className={classes.large}  />
       </Grid>
-      <Grid className={classes.center}>
+      <Grid className={classes.horitonzalCenter}>
         <h3>{name}</h3>
       </Grid>
-      <Grid className={classes.center} style={{marginTop:'-2vh'}}>
+      <Grid className={classes.horitonzalCenter} style={{marginTop:'-2vh'}}>
         @{username}
       </Grid>
-      <Grid className={classes.center}>
+      <Grid className={classes.horitonzalCenter}>
         <Chip
             icon={<CallIcon/>}
             label="Call"
@@ -72,19 +72,19 @@ function UserCard({name,photoUrl,username}){
         Tasks
         <span style={{float:'right'}}><KeyboardArrowDownIcon/></span>
       </Grid>
-      <Grid style={{paddingLeft:'10px',marginBottom:'10px'}}>
+      <Grid style={styles.checkbox}>
         <label><input type="checkbox" />Constant Task 1</label>
       </Grid>
 
-      <Grid style={{paddingLeft:'10px',marginBottom:'10px'}}>
+      <Grid style={styles.checkbox}>
         <label><input type="checkbox" />Constant Task 2</label>
       </Grid>
 
-      <Grid style={{paddingLeft:'10px',marginBottom:'10px'}}>
+      <Grid style={styles.checkbox}>
         <label><input type="checkbox" />Constant Task 3</label>
       </Grid>
 
-      <Grid style={{paddingLeft:'10px',marginBottom:'10px'}}>
+      <Grid style={styles.checkbox}>
         All Tasks
         <Divider style={{width:'68px'}}/>
       </Grid>
@@ -96,16 +96,16 @@ function UserCard({name,photoUrl,username}){
 function IndividualChat(props){
   let tweet=props.tweet;
   return(
-    <Grid style={{display:'flex',flexDirection:'row',paddingBottom:'3vh'}}>
-      <Grid sm={10} item style={{display:'flex',flexDirection:'row'}}>
+    <Grid style={styles.sameRow}>
+      <Grid sm={10} item style={{...styles.sameRow,marginBottom:'3vh'}}>
       <Grid>
         <Avatar alt={tweet.user.name} src={tweet.user.profile_image_url_https}/>
       </Grid>
-      <Grid style={{marginLeft:'1vw',marginTop:'1vh'}}>
+      <Grid style={styles.spaceLeftTop}>
         <Typography>{tweet.text}</Typography>
       </Grid>
       </Grid>
-      <Grid item sm={2} style={{marginLeft:'1vw',marginTop:'1vh'}}>
+      <Grid item sm={2} style={styles.spaceLeftTop}>
         <Typography>{(new Date(tweet.created_at)).toString().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}).toString().substr(16,5)+'\n'+
         (new Date(tweet.created_at)).toString().toLocaleString(undefined, {timeZone: 'Asia/Kolkata'}).toString().substr(4,6)}</Typography>
       </Grid>
@@ -114,6 +114,7 @@ function IndividualChat(props){
 }
 
 function LoggedIn(props) {
+
   const [isLoading,setIsLoading]=useState(true);
   const [online,setOnline]=useState('Online');
   const [token,setToken]=useState('');
@@ -123,9 +124,13 @@ function LoggedIn(props) {
   const [allTweets,setAllTweets]=useState('');
   const [photoUrl,setPhotoUrl]=useState('background.jpg');
   const [currentCard,setCurrentCard]=useState(0);
+
   function handlePostTweet(){
+
     setIsLoading(true);
+
     let tweet=allTweets[currentCard];
+
     let data={
       status:document.getElementById("current").value,
       replyto:tweet[tweet.length-1].id_str,
@@ -134,8 +139,8 @@ function LoggedIn(props) {
       id:id,
       index:parseInt(currentCard)+1
     };
-    console.log(data);
-    fetch(baseUrl+'login/user',{
+    
+    fetch(baseUrl+'tweet',{
       method:'POST',
       body:JSON.stringify(data),
       headers:{
@@ -158,18 +163,19 @@ function LoggedIn(props) {
     })
     .then(response => response.json())
     .then(res=>{
-      // let tempAllTweets=res.key;
       setAllTweets(res.key);
       setIsLoading(false);
     })
     .catch(error=>{alert(error.message);})
   }
+
   function SelectedCard(props){
 
     const classes = useStyles();
+
     return(
-      <Card className={classes.root} style={{border:'1px solid grey'}}>
-        <Grid item lg={12} sm={12} style={{display:'flex',flexDirection:'row',marginLeft:'20px',marginTop:'10px'}}>
+      <Card className={classes.root} style={styles.boxBorder}>
+        <Grid item lg={12} sm={12} style={{...styles.sameRow,marginLeft:'20px',marginTop:'10px'}}>
           <Avatar src={props.tweet[0].user.profile_image_url} style={{marginTop:'10px'}}/>
           <h3 style={{marginLeft:'20px'}}>{props.tweet[0].user.name}</h3>
           <Chip
@@ -178,11 +184,11 @@ function LoggedIn(props) {
           />
         </Grid>
         <Divider/>
-        <Grid style={{paddingLeft:'20px',marginBottom:'10px',marginRight:'20px',height:'65vh',marginTop:'3vh',maxHeight: '63vh', overflow: 'auto'}}>
+        <Grid style={styles.selectedCard}>
           {props.tweet.map((tweet,index)=>{
             return (<IndividualChat key={index} tweet={tweet}/>)
           })}
-          <Grid style={{display:'flex',flexDirection:'row',bottom:'10px',position:'fixed', marginBottom:'5vh'}}>
+          <Grid style={styles.bottom}>
             <Avatar src={photoUrl}/>
             <TextField
                 id="current"
@@ -208,9 +214,9 @@ function LoggedIn(props) {
     const classes = useStyles();
     
     return (
-      <Card onClick={()=>setCurrentCard(props.index)} className={classes.root} style={{border:'1px solid grey'}}>
+      <Card onClick={()=>setCurrentCard(props.index)} className={classes.root} style={styles.boxBorder}>
         <CardHeader
-        style={{paddingBottom:0,paddingTop:10,boder:'1px black solid'}}
+        style={{paddingBottom:0,paddingTop:10}}
           avatar={
             <Avatar src={props.tweet[0].user.profile_image_url}/>
           }
@@ -226,32 +232,42 @@ function LoggedIn(props) {
   }
 
   useEffect(() => {
+
     setIsLoading(true);
     socket=io('/');
+
     socket.on('update',async (data)=>{
       console.log(data);
       setAllTweets(data.key);
     })
+
     socket.on('tweet',async (data)=>{
+      
       console.log("data");
       let {key,index}=data;
       let tempAllTweets=allTweets;
+
       if(index>=allTweets.length){
         tempAllTweets.push([key]);
       }
       else{
         tempAllTweets[index].push(key);
       }
+
       setAllTweets(tempAllTweets);
     })//socket for streaming data
+
     const query = new URLSearchParams(props.location.search);
+
     setIsLoading(true);
+
     let userData={
       id:query.get('id'),
       token:query.get('token'),
       tokenSecret:query.get('tokenSecret'),
       username:query.get('username'),
     };
+    
     fetch(baseUrl+'userdetails/',{
       method:'POST',
       body:JSON.stringify(userData),
@@ -309,7 +325,7 @@ function LoggedIn(props) {
           </Grid>
         </Grid>
         <div style={{marginTop:'10vh'}}></div>
-        <Grid style={{flexDirection:'row'}}>
+        <Grid>
           <Grid style={{display:'flex',float:'left'}}>
           <Typography variant='h4'>Conversation</Typography>
           <TextField
@@ -328,16 +344,16 @@ function LoggedIn(props) {
             icon={<SwapHorizIcon/>}
             label="Filter"
             clickable
-            style={{marginLeft:'2vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'1vh'}}
+            style={{marginLeft:'2vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'0.5vh'}}
           />
           </Grid>
           <Grid style={{float:'right'}}>
           <TextField onChange={(event)=>setOnline(event.target.value)} style={{marginTop:'1vh',height:'1vh',width:'100px'}} id="select" value={online} select>
-            <MenuItem value="Online" style={{display:'flex',flexDirection:'row'}}>
+            <MenuItem value="Online" style={styles.sameRow}>
               <Grid style={{marginRight:'10px',marginTop:'3px',display:'block',float:'left',width:'10px',height:'10px',borderRadius:'50%',backgroundColor:'green'}}></Grid>
               Online
             </MenuItem>
-            <MenuItem value="Offline" style={{display:'flex',flexDirection:'row'}}>
+            <MenuItem value="Offline" style={styles.sameRow}>
               <Grid style={{marginRight:'10px',marginTop:'3px',display:'block',float:'left',width:'10px',height:'10px',borderRadius:'50%',backgroundColor:'red'}}></Grid>
               Offline
             </MenuItem>
@@ -345,8 +361,8 @@ function LoggedIn(props) {
           </Grid>
         </Grid>
         <div style={{marginTop:'5vh'}}></div>
-        <Grid lg={12} item style={{display:'flex',flexDirection:'column'}}>
-          <Grid lg={12} item style={{display:'flex',flexDirection:'row'}}>
+        <Grid lg={12} item style={styles.sameColumn}>
+          <Grid lg={12} item style={styles.sameRow}>
             <Grid md={3} item style={{maxHeight: '74vh', overflow: 'auto'}}>
               {allTweets!==''?allTweets.map((data,index)=>{
                 return data?<ConversationCard key={index} tweet={data} index={index}/>:<div></div>
@@ -355,7 +371,7 @@ function LoggedIn(props) {
             <Grid md={7} item style={{paddingRight:'10',paddingLeft:'20px'}}>
               {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
             </Grid>
-            <Grid md={2} item style={{height:'74vh',paddingTop:'10px',border:'1px solid grey'}}>
+            <Grid md={2} item style={{height:'70vh',paddingTop:'10px',...styles.boxBorder}}>
               {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
             </Grid>
           </Grid>
@@ -367,6 +383,54 @@ function LoggedIn(props) {
   return(
     <Loading/>
   )
+}
+
+const styles={
+  center:{
+    display:'flex',
+    flexDirection:'column',
+    justifyContent:'center'
+  },
+  userCardHeader:{
+    display:'flex',
+    justifyContent:'flex-end',
+    paddingRight:'10px'
+  },
+  checkbox:{
+    paddingLeft:'10px',
+    marginBottom:'10px'
+  },
+  spaceLeftTop:{
+    marginLeft:'1vw',
+    marginTop:'1vh'
+  },
+  boxBorder:{
+    border:'1px solid grey'
+  },
+  selectedCard:{
+    paddingLeft:'20px',
+    marginBottom:'10px',
+    marginRight:'20px',
+    height:'60vh',
+    maxHeight:'60vh',
+    paddingTop:'3vh',
+    overflow: 'auto'
+  },
+  bottom:{
+    display:'flex',
+    flexDirection:'row',
+    bottom:'45px',
+    position:'fixed',
+    marginBottom:'5vh'
+  },
+  sameRow:{
+    display:'flex',
+    flexDirection:'row'
+  },
+  sameColumn:{
+    display:'flex',
+    flexDirection:'column'
+  }
 }
 
 export default LoggedIn;

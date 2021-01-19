@@ -7,6 +7,7 @@ var server = null;
 var socketio=require('socket.io');
 var Twit=require('twit');
 var config=require('../config');
+
 const createTwit=(token,tokenSecret)=>{
   return new Twit({
     consumer_key:config.key,
@@ -65,15 +66,21 @@ router.post('/',async (req,res)=>{
     io=socketio(server);
   else
     console.error("Server not found");
+
   const {token,tokenSecret,username,id}=req.body;
+
   io.on('connection',(socket)=>{
-  setInterval(async()=>{
-    let getTweets=await Users.findOne({twitterId:id});
-    io.emit('update',{key:getTweets.tweets});
-  },10000);
+  
+    setInterval(async()=>{
+      let getTweets=await Users.findOne({twitterId:id});
+      io.emit('update',{key:getTweets.tweets});
+    },10000);
+
     console.log("CONNECTED TO SOCKET"); 
+
     let T=createTwit(token,tokenSecret);
     console.log('@'+username);
+
     var stream =T.stream('statuses/filter',{track:'@'+username})
     stream.on('tweet', async (tweet)=> {
       console.log('-----');

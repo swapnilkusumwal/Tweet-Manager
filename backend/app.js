@@ -7,39 +7,27 @@ var passport=require('passport');
 var session = require('express-session');
 var mongoose = require("mongoose");
 var indexRouter = require('./routes/index');
-var loginRouter = require('./routes/loginRouter');
-var registerRouter = require('./routes/registerRouter');
+var loginRouter = require('./routes/login');
+var registerRouter = require('./routes/register');
 var config=require('./config');
-var usersRouter = require('./routes/users');
-var userdetails = require('./routes/userdetails').router;
-var userSetServer = require('./routes/userdetails').setServer;
+var createTweetRouter = require('./routes/createTweet');
+var userdetails = require('./routes/userDetails').router;
+var userSetServer = require('./routes/userDetails').setServer;
 var passportLogin = require("./passportLogin");
 var cors=require('cors');
 var app = express();
-var debug = require('debug')('backend:server');
 var http = require('http');
 const server = http.createServer(app);
-// var socketio=require('socket.io');
-// const io=socketio(server);
-
-/**
- * Get port from environment and store in Express.
- */
 
 var port = (process.env.PORT || '3000');
 app.set('port', port);
-
-// io.on('connection',(socket)=>{
-//   console.log("CONNECTED TO SOCKET");
-//   socket.emit('tweet',{key:"value"});
-// })
 
 server.listen(port,()=>{
   console.log('Server running on port 3000...')
   userSetServer(server)
 });
 
-mongoose.connect('mongodb://localhost:27017/tweetmention',{ useNewUrlParser: true,useUnifiedTopology: true }, () => {
+mongoose.connect(config.mongokey,{ useNewUrlParser: true,useUnifiedTopology: true }, () => {
   console.log("connected to mongo db");
 });
 
@@ -64,9 +52,9 @@ app.use('/', indexRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/userdetails', userdetails);
-app.use('/login/user', usersRouter);
+app.use('/tweet', createTweetRouter);
 app.get('/login/redirect', passport.authenticate("twitter", {
-    successRedirect: '/login/user',failureRedirect: "/login/failed"
+    successRedirect: '/tweet',failureRedirect: "/login/failed"
   })
 );
 

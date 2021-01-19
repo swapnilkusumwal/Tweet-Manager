@@ -30,8 +30,7 @@ async function insertTweet(id,tweet,index){
 }
 
 router.get('/',async function(req, res, next) {
-  // console.log(req.user);
-  
+
   res.redirect(url.format({
     pathname:"http://localhost:3001/loggedin/",
     query: {
@@ -42,24 +41,28 @@ router.get('/',async function(req, res, next) {
       username:req.user.profile.username
     }
   }));
+
 })
 
 router.post('/',async (req,res)=>{
-  console.log(req.body);
+  
   let T=await createTwit(req.body.token,req.body.tokenSecret);
+
   T.post('/statuses/update', {status:req.body.status,in_reply_to_status_id:req.body.replyto} , async(error, tweet) => {//use str wala id
+    
     if(error) {
       console.log(error);
       res.statusCode=403;
       res.statusMessage=allErrors[0].message;
       console.log(error);
     }
+
     else{
       let user=await insertTweet(req.body.id,tweet,req.body.index);
-
       res.json({key:user.tweets});
     }
   })
+
 })
 
 module.exports = router;

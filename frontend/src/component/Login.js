@@ -39,33 +39,9 @@ const useStyles=makeStyles({
 })
 
 export default function Login(){
-  // const handleLogin=(email,password)=>{
-  //   setIsLoading(true);
-  //   fetch(baseUrl+'login',{
-  //     headers:{
-  //       'Content-Type': 'application/json',
-  //     },
-  //     credentials:'same-origin'
-  //   })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       return response;
-  //     } else {
-  //       console.log(response);
-  //       var error = new Error('Error ' + response.status + ': ' + response.statusText);
-  //       error.response = response;
-  //       throw error;
-  //     }
-  //   },
-  //   error => {
-  //         var errmess = new Error(error.message);
-  //         throw errmess;
-  //   })
-  //   .then(response => response.json())
-  //   .then(res=>{console.log(res);setIsLoading(false)})
-  //   .catch(error=>alert(error.message))
-  // }
+
   const handleRegister=(email,password)=>{
+
     fetch(baseUrl+'register',{
       method:'POST',
       body:JSON.stringify({
@@ -94,14 +70,13 @@ export default function Login(){
     .then(response => response.json())
     .then(res=>{alert(res.key);setRegisterEmail('');setRegisterPassword('')})
     .catch(error=>alert(error.message))
+
   }
-  // const [theme,setTheme]=useState(1);// 1 for dark 0 for light
   const [isLoading,setIsLoading]=useState(false);
   const classes=useStyles();
-  // const [loginEmail,setLoginEmail]=useState('');
   const [registerEmail,setRegisterEmail]=useState('');
-  // const [loginPassword,setLoginPassword]=useState('');
   const [registerPassword,setRegisterPassword]=useState('');
+
   if(!isLoading)
   return (
     <>
@@ -121,48 +96,15 @@ export default function Login(){
       <Container style={{height:'65vh'}}>
         <Grid container spacing={4} justify='space-around'>
           <Grid xs={12} sm={6} md={4} lg={4} item>
-            <Paper className={classes.light} style={{marginTop:'2vh',display:'flex',height:'40vh',width:'100%',flexDirection:'column'}}>
+            <Paper className={classes.light} style={styles.loginBox}>
               <Grid >
                 <h1 >Login</h1>
                 <hr/>
               </Grid>
-              {/* <Grid item>
-              <TextField 
-                variant='outlined'
-                color='primary'
-                type="email"
-                label="Email"
-                size='large'
-                value={loginEmail}
-                onChange={(event)=>setLoginEmail(event.target.value)}
-                placeholder="example@temp.com"
-              />
-              </Grid>
-              <Grid item>
-              <TextField 
-                style={{marginTop:'5vh'}}
-                variant='outlined'
-                color='primary'
-                type="password"
-                label="Password"
-                size='large'
-                value={loginPassword}
-                onChange={(event)=>setLoginPassword(event.target.value)}
-                placeholder="Password"
-              />
-              </Grid>
-              <Button 
-                className={classes.button}
-                startIcon={<SaveIcon/>}
-                endIcon={<SaveIcon/>}
-                variant='contained' color='primary'
-                onClick={()=>handleLogin(loginEmail,loginPassword)}>
-                Login
-              </Button> */}
-              <Grid style={{display:'flex',alignItems:'center',justifyContent:'center',marginTop:'7vh'}}>
+              <Grid style={styles.twitterButtonGrid}>
                 <Button 
                   startIcon={<TwitterIcon/>}
-                  style={{paddingTop:'10px',paddingBottom:'10px'}}
+                  style={styles.twitterButton}
                   variant='contained' color='primary'
                   href="http://localhost:3000/login">
                   Login with Twitter
@@ -171,7 +113,7 @@ export default function Login(){
             </Paper>
           </Grid>
           <Grid xs={12} sm={6} md={4} lg={4} item>
-            <Paper className={classes.light} style={{height:'40vh',width:'100%'}}>
+            <Paper className={classes.light} style={styles.registerBox}>
               <h1 style={{paddingTop:'2vh'}}>Register</h1>
               <hr/>
               <Grid item>
@@ -219,4 +161,28 @@ export default function Login(){
     return(
       <Loading/>
     )
+}
+
+const styles={
+  loginBox:{
+    marginTop:'2vh',
+    display:'flex',
+    height:'40vh',
+    width:'100%',
+    flexDirection:'column'
+  },
+  twitterButtonGrid:{
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:'7vh'
+  },
+  twitterButton:{
+    paddingTop:'10px',
+    paddingBottom:'10px'
+  },
+  registerBox:{
+    height:'40vh',
+    width:'100%'
+  }
 }
