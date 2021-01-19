@@ -371,7 +371,7 @@ function LoggedIn(props) {
             <Grid md={7} item style={{paddingRight:'10',paddingLeft:'20px'}}>
               {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
             </Grid>
-            <Grid md={2} item style={{height:'70vh',paddingTop:'10px',...styles.boxBorder}}>
+            <Grid md={2} item style={{height:'70.5vh',paddingTop:'10px',...styles.boxBorder}}>
               {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
             </Grid>
           </Grid>
