@@ -107,7 +107,7 @@ let passportStrategy=new Strategy({
   
   consumerKey: config.key,
   consumerSecret: config.secret,
-  callbackURL: 'http://localhost:3000/login/redirect'
+  callbackURL: 'http://45.79.127.113:4000/login/redirect'
 
   },async function(token, tokenSecret, profile, callback) {
 

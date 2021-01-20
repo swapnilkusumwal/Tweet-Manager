@@ -3,7 +3,7 @@ var router = express.Router();
 var passport=require('passport');
 
 router.get('/',(req,res)=>{
-  res.render('index',{title:"Express1"})
+  res.redirect('index.html')
 })
 
 module.exports = router;

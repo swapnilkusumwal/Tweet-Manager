@@ -16,7 +16,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SendIcon from '@material-ui/icons/Send';
 import io from 'socket.io-client';
 var socket;
-let baseUrl="http://localhost:3000/"
+let baseUrl="http://45.79.127.113:4000/"
 const useStyles = makeStyles((theme) => ({
   root: {
     marginBottom:15
@@ -65,7 +65,7 @@ function UserCard({name,photoUrl,username}){
             clickable
           />
       </Grid>
-      <Grid style={{marginTop:'25vh'}}>
+      <Grid style={{marginTop:'15vh'}}>
         <Divider/>
       </Grid>
       <Grid style={{paddingLeft:'10px',display:'block',paddingTop:'20px'}}>
@@ -185,9 +185,11 @@ function LoggedIn(props) {
         </Grid>
         <Divider/>
         <Grid style={styles.selectedCard}>
+          <Grid style={{maxHeight:'50vh',overflow:'auto'}}>
           {props.tweet.map((tweet,index)=>{
             return (<IndividualChat key={index} tweet={tweet}/>)
           })}
+          </Grid>
           <Grid style={styles.bottom}>
             <Avatar src={photoUrl}/>
             <TextField
@@ -196,7 +198,7 @@ function LoggedIn(props) {
                 InputProps={{
                   endAdornment: <InputAdornment position="end"><AttachmentIcon/></InputAdornment>
                 }}
-                style={{width:'40vw',marginLeft:'1vw'}}
+                style={{width:'40vw'}}
                 size='small'
                 variant='outlined'
                 type="text"
@@ -237,13 +239,13 @@ function LoggedIn(props) {
     socket=io('/');
 
     socket.on('update',async (data)=>{
-      console.log(data);
+      // console.log(data);
       setAllTweets(data.key);
     })
 
     socket.on('tweet',async (data)=>{
       
-      console.log("data");
+      // console.log("data");
       let {key,index}=data;
       let tempAllTweets=allTweets;
 
@@ -371,7 +373,7 @@ function LoggedIn(props) {
             <Grid md={7} item style={{paddingRight:'10',paddingLeft:'20px'}}>
               {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
             </Grid>
-            <Grid md={2} item style={{height:'70.5vh',paddingTop:'10px',...styles.boxBorder}}>
+            <Grid md={2} item style={{height:'66.5vh',paddingTop:'10px',overflow:'auto',...styles.boxBorder}}>
               {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
             </Grid>
           </Grid>
@@ -411,16 +413,13 @@ const styles={
     paddingLeft:'20px',
     marginBottom:'10px',
     marginRight:'20px',
-    height:'60vh',
-    maxHeight:'60vh',
+    height:'55vh',
     paddingTop:'3vh',
     overflow: 'auto'
   },
   bottom:{
     display:'flex',
     flexDirection:'row',
-    bottom:'45px',
-    position:'fixed',
     marginBottom:'5vh'
   },
   sameRow:{

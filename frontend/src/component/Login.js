@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Loading from './LoadingComponent';
 import TwitterIcon from '@material-ui/icons/Twitter';
 
-let baseUrl='http://localhost:3000/';
+let baseUrl='http://45.79.127.113:4000/';
 const useStyles=makeStyles({
   button:{
     background:'linear-gradient(45deg,#073312,#A12345)',
@@ -106,7 +106,7 @@ export default function Login(){
                   startIcon={<TwitterIcon/>}
                   style={styles.twitterButton}
                   variant='contained' color='primary'
-                  href="http://localhost:3000/login">
+                  href="http://45.79.127.113:4000/login">
                   Login with Twitter
                 </Button>
               </Grid>
@@ -167,7 +167,7 @@ const styles={
   loginBox:{
     marginTop:'2vh',
     display:'flex',
-    height:'40vh',
+    height:'50vh',
     width:'100%',
     flexDirection:'column'
   },
@@ -182,7 +182,7 @@ const styles={
     paddingBottom:'10px'
   },
   registerBox:{
-    height:'40vh',
+    height:'50vh',
     width:'100%'
   }
 }

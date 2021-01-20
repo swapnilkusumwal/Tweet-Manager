@@ -32,7 +32,7 @@ async function insertTweet(id,tweet,index){
 router.get('/',async function(req, res, next) {
 
   res.redirect(url.format({
-    pathname:"http://localhost:3001/loggedin/",
+    pathname:"http://45.79.127.113:4000/loggedin/",
     query: {
       token:req.user.token,
       tokenSecret:req.user.tokenSecret,

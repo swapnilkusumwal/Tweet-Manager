@@ -19,11 +19,11 @@ var app = express();
 var http = require('http');
 const server = http.createServer(app);
 
-var port = (process.env.PORT || '3000');
+var port = (process.env.PORT || '4000');
 app.set('port', port);
 
 server.listen(port,()=>{
-  console.log('Server running on port 3000...')
+  console.log('Server running on port 4000...')
   userSetServer(server)
 });
 
@@ -36,7 +36,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: "http://localhost:3001",methods: "GET,PUT,POST,DELETE",credentials: true
+  origin: "http://localhost:3000",methods: "GET,PUT,POST,DELETE",credentials: true
 }));
 
 app.set('views', path.join(__dirname, 'views'));
@@ -49,7 +49,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/register', registerRouter);
+app.use('/register',registerRouter);
 app.use('/login', loginRouter);
 app.use('/userdetails', userdetails);
 app.use('/tweet', createTweetRouter);
@@ -57,7 +57,9 @@ app.get('/login/redirect', passport.authenticate("twitter", {
     successRedirect: '/tweet',failureRedirect: "/login/failed"
   })
 );
-
+app.get('*', (req,res) =>{
+  res.sendFile(path.join(__dirname+'/../frontend/build/index.html'));
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
