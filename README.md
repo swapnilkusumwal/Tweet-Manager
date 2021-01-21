@@ -18,4 +18,6 @@ How to use?
 - Go to the frontend folder and install node_modules in frontend using command 'yarn install'
 - Start backend on port 4000 by using command 'node app'.
 - Start frontend on port 3000 by using command 'yarn start' or 'npm start'.
+- Also change all the urls from where the data is being fetched to localhost:4000 and callbackUrl as localhost:3000
 - Then go to http://localhost:3000/
+
