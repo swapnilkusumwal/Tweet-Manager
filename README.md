@@ -16,6 +16,6 @@ How to use?
 - Change the config.js file with the respective keys in backend folder.
 - Go to the backend folder and install node_modules in backend using command 'npm install'
 - Go to the frontend folder and install node_modules in frontend using command 'yarn install'
-- Start backend on port 3000 by using command 'node app'(by default it will start on port 3000 unless changed)
-- Start frontend on port 3001 by using command 'yarn start'.
-- Then go to http://localhost:3001/
+- Start backend on port 4000 by using command 'node app'.
+- Start frontend on port 3000 by using command 'yarn start' or 'npm start'.
+- Then go to http://localhost:3000/
