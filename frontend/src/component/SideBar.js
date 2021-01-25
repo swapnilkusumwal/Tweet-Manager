@@ -26,7 +26,7 @@ export default function SideBar(props) {
   const classes = useStyles();
 
   return (
-      <Grid className={classes.sidebar} item>
+      <Grid className={classes.sidebar} style={{position:'relative'}} item>
         <ListItem button key={11} style={{marginTop:'2vh',marginBottom:'5vh'}}>
           <img src={icon} alt="icon" style={{width:'30px',paddingTop:'10px'}}/>
         </ListItem>
@@ -37,10 +37,10 @@ export default function SideBar(props) {
             </ListItem>
           ))}
         </List>
-        <ListItem button key={9} style={{bottom:'12vh',position:'fixed',width:'60px'}}>
+        <ListItem button key={9} style={{bottom:'12vh',position:'absolute',width:'60px'}}>
           <DonutLargeRoundedIcon/>
         </ListItem>
-        <ListItem button key={10} style={{bottom:'5vh',position:'fixed',width:'60px',padding:'10px'}}>
+        <ListItem button key={10} style={{bottom:'5vh',position:'absolute',width:'60px',padding:'10px'}}>
           <Avatar alt="dp" src={props.photoUrl} />
         </ListItem>
         

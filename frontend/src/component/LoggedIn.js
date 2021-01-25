@@ -127,7 +127,7 @@ function LoggedIn(props) {
 
   function handlePostTweet(){
 
-    setIsLoading(true);
+    // setIsLoading(true);
 
     let tweet=allTweets[currentCard];
 
@@ -164,7 +164,7 @@ function LoggedIn(props) {
     .then(response => response.json())
     .then(res=>{
       setAllTweets(res.key);
-      setIsLoading(false);
+      // setIsLoading(false);
     })
     .catch(error=>{alert(error.message);})
   }
@@ -174,37 +174,43 @@ function LoggedIn(props) {
     const classes = useStyles();
 
     return(
-      <Card className={classes.root} style={styles.boxBorder}>
-        <Grid item lg={12} sm={12} style={{...styles.sameRow,marginLeft:'20px',marginTop:'10px'}}>
-          <Avatar src={props.tweet[0].user.profile_image_url} style={{marginTop:'10px'}}/>
-          <h3 style={{marginLeft:'20px'}}>{props.tweet[0].user.name}</h3>
-          <Chip
-            label="Create a task"
-            style={{marginLeft:'2vw',marginLeft:'30vw',paddingLeft:'10px',paddingRight:'10px',marginTop:'1.5vh',justifyContent:'flex-end'}}
-          />
+      <Card className={classes.root} style={{height:'70vh',...styles.boxBorder}}>
+        <Grid item lg={12} sm={12} style={{...styles.sameRow,marginLeft:'20px',marginTop:'10px',minHeight:'7vh',maxHeight:'7vh',overflow:'auto'}}>
+          <Grid item lg={8} sm={8} style={styles.sameRow}>
+            <Avatar src={props.tweet[0].user.profile_image_url} style={{marginTop:'10px'}}/>
+            <h3 style={{marginLeft:'20px'}}>{props.tweet[0].user.name}</h3>
+          </Grid>
+          <Grid item lg={4} sm={4} style={{display:'flex',justifyContent:'flex-end',paddingRight:'2vw'}}>
+            <Chip
+              label="Create a task"
+              style={{marginTop:'1.5vh'}}
+            />
+          </Grid>
         </Grid>
         <Divider/>
-        <Grid style={styles.selectedCard}>
-          <Grid style={{maxHeight:'50vh',overflow:'auto'}}>
+        <Grid style={{...styles.selectedCard}}>
+          <Grid style={{zIndex:0,minHeight:'53vh',maxHeight:'53vh',overflow:'auto'}}>
           {props.tweet.map((tweet,index)=>{
             return (<IndividualChat key={index} tweet={tweet}/>)
           })}
           </Grid>
-          <Grid style={styles.bottom}>
-            <Avatar src={photoUrl}/>
+          <Grid lg={12} md={12} style={{...styles.sameRow,zIndex:'1',minHeight:'10vh'}} item>
+            <Grid item lg={1} md={2} sm={2} xs={3}><Avatar src={photoUrl}/></Grid>
+            <Grid lg={10} md={8} sm={8} xs={6} item>
             <TextField
                 id="current"
                 key="yoyo"
                 InputProps={{
                   endAdornment: <InputAdornment position="end"><AttachmentIcon/></InputAdornment>
                 }}
-                style={{width:'40vw'}}
+                style={{width:'100%'}}
                 size='small'
                 variant='outlined'
                 type="text"
                 placeholder="Reply..."
               />
-            <SendIcon style={{marginTop:'1vh',marginLeft:'1vw'}} onClick={()=>handlePostTweet()}/> 
+              </Grid>
+            <Grid item lg={1} md={2} sm={2} xs={3}><SendIcon style={{marginTop:'1vh',marginLeft:'1vw'}} onClick={()=>handlePostTweet()}/> </Grid>
           </Grid>
         </Grid>
       </Card>
@@ -232,36 +238,53 @@ function LoggedIn(props) {
       </Card>
     );
   }
-
+  function Conversations(){
+    return(
+        <Grid lg={12} item style={{height:'70vh',...styles.sameRow}}>
+          <Grid md={3} item style={{maxHeight: '70vh', overflow: 'auto'}}>
+            {allTweets!==''?allTweets.map((data,index)=>{
+              return data?<ConversationCard key={index} tweet={data} index={index}/>:<div></div>
+            }):<div></div>}
+          </Grid>
+          <Grid lg={9} md={9} style={{height:'70vh',flexDirection:'row',display:'flex'}} item>
+            <Grid md={8} lg={8} item style={{paddingRight:'10',paddingLeft:'20px'}} >
+              {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
+            </Grid>
+            <Grid md={4} lg={4} item style={{...styles.boxBorder,height:'70vh',maxHeight:'70vh',paddingTop:'10px',overflow:'auto'}} >
+              {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
+            </Grid>
+          </Grid>
+        </Grid>
+    )
+  }
   useEffect(() => {
 
     setIsLoading(true);
     socket=io('/');
 
     socket.on('update',async (data)=>{
-      // console.log(data);
       setAllTweets(data.key);
     })
 
-    socket.on('tweet',async (data)=>{
+    // socket.on('tweet',async (data)=>{
       
-      // console.log("data");
-      let {key,index}=data;
-      let tempAllTweets=allTweets;
+    //   // console.log("data");
+    //   let {key,index}=data;
+    //   let tempAllTweets=allTweets;
 
-      if(index>=allTweets.length){
-        tempAllTweets.push([key]);
-      }
-      else{
-        tempAllTweets[index].push(key);
-      }
+    //   if(index-1>=allTweets.length){
+    //     tempAllTweets.push([key]);
+    //   }
+    //   else{
+    //     tempAllTweets[index-1].push(key);
+    //   }
 
-      setAllTweets(tempAllTweets);
-    })//socket for streaming data
+    //   setAllTweets(tempAllTweets);
+    // })//socket for streaming data
 
     const query = new URLSearchParams(props.location.search);
 
-    setIsLoading(true);
+    // setIsLoading(true);
 
     let userData={
       id:query.get('id'),
@@ -363,21 +386,7 @@ function LoggedIn(props) {
           </Grid>
         </Grid>
         <div style={{marginTop:'5vh'}}></div>
-        <Grid lg={12} item style={styles.sameColumn}>
-          <Grid lg={12} item style={styles.sameRow}>
-            <Grid md={3} item style={{maxHeight: '74vh', overflow: 'auto'}}>
-              {allTweets!==''?allTweets.map((data,index)=>{
-                return data?<ConversationCard key={index} tweet={data} index={index}/>:<div></div>
-              }):<div></div>}
-            </Grid>
-            <Grid md={7} item style={{paddingRight:'10',paddingLeft:'20px'}}>
-              {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
-            </Grid>
-            <Grid md={2} item style={{height:'66.5vh',paddingTop:'10px',overflow:'auto',...styles.boxBorder}}>
-              {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
-            </Grid>
-          </Grid>
-        </Grid>
+        {allTweets.length>0 && allTweets!==undefined && allTweets!==null?<Conversations/>:<div></div>}
       </Grid>
     </Grid>
   );
@@ -411,16 +420,9 @@ const styles={
   },
   selectedCard:{
     paddingLeft:'20px',
-    marginBottom:'10px',
     marginRight:'20px',
-    height:'55vh',
     paddingTop:'3vh',
     overflow: 'auto'
-  },
-  bottom:{
-    display:'flex',
-    flexDirection:'row',
-    marginBottom:'5vh'
   },
   sameRow:{
     display:'flex',

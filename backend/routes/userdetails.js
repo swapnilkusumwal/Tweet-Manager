@@ -7,6 +7,7 @@ var server = null;
 var socketio=require('socket.io');
 var Twit=require('twit');
 var config=require('../config');
+var io = null;
 
 const createTwit=(token,tokenSecret)=>{
   return new Twit({
@@ -31,7 +32,6 @@ async function addTweet(id,tweet){
   if(user){
     let index=null;
     val=user.hashMap.get(tweet.in_reply_to_status_id_str);
-    console.log(val);
     let tempHashMap=user.hashMap;
     let tempTweets=user.tweets;
     if(!val){
@@ -47,6 +47,7 @@ async function addTweet(id,tweet){
       tempHashMap.set(tweet.id_str,val);
       console.log("??");
     }
+    io.emit('update',{key:tempTweets});
     await Users.updateOne({twitterId:id},{hashMap:tempHashMap,tweets:tempTweets})
     return index;
   }
@@ -61,7 +62,6 @@ function getUser(id){
 
 router.post('/',async (req,res)=>{
   // console.log(req.body);
-  var io = null;
   if(server != null)
     io=socketio(server);
   else
@@ -71,10 +71,10 @@ router.post('/',async (req,res)=>{
 
   io.on('connection',(socket)=>{
   
-    setInterval(async()=>{
-      let getTweets=await Users.findOne({twitterId:id});
-      io.emit('update',{key:getTweets.tweets});
-    },10000);
+    // setInterval(async()=>{
+      // let getTweets=await Users.findOne({twitterId:id});
+      // io.emit('update',{key:getTweets.tweets});
+    // },10000);
 
     console.log("CONNECTED TO SOCKET"); 
 
