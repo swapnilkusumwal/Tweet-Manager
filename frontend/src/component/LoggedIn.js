@@ -222,7 +222,7 @@ function LoggedIn(props) {
     const classes = useStyles();
     
     return (
-      <Card onClick={()=>setCurrentCard(props.index)} className={classes.root} style={styles.boxBorder}>
+      <Card onClick={()=>setCurrentCard(props.index)} className={classes.root} style={{...styles.boxBorder,boxShadow:'none'}}>
         <CardHeader
         style={{paddingBottom:0,paddingTop:10}}
           avatar={
@@ -250,7 +250,7 @@ function LoggedIn(props) {
             <Grid md={8} lg={8} item style={{paddingRight:'10',paddingLeft:'20px'}} >
               {currentCard!==''?<SelectedCard tweet={allTweets[currentCard]}/>:<div></div>}
             </Grid>
-            <Grid md={4} lg={4} item style={{...styles.boxBorder,height:'70vh',maxHeight:'70vh',paddingTop:'10px',overflow:'auto'}} >
+            <Grid md={4} lg={4} item style={{...styles.boxBorder,height:'70.5vh',minHeight:'70.5vh',paddingTop:'10px',overflow:'auto'}} >
               {allTweets!==''?<UserCard name={allTweets[currentCard][0].user.name} photoUrl={allTweets[currentCard][0].user.profile_image_url_https} username={allTweets[currentCard][0].user.screen_name}/>:<div></div>}
             </Grid>
           </Grid>
@@ -416,7 +416,7 @@ const styles={
     marginTop:'1vh'
   },
   boxBorder:{
-    border:'1px solid grey'
+    border:'1px solid #DCDCDC'
   },
   selectedCard:{
     paddingLeft:'20px',
